@@ -36,8 +36,8 @@ function drawTool (canvas) {
 
     this.translate = (x, y) => {
         this.ctx.translate(x, y);
-        this.xOffset = x;
-        this.yOffset = y;
+        this.xOffset += x;
+        this.yOffset += y;
     }
 
     this.circle = (x, y, r, color = "black", fill=true, w=1) => {
