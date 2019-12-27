@@ -6,23 +6,16 @@ canvas2 = document.getElementById("layer2");
 canvas2.width = document.documentElement.clientWidth - 50;
 canvas2.height = document.documentElement.clientHeight * 1.5;
 
-var m1Slider = document.getElementById("m1Slider");
-
-// Update the current slider value (each time you drag the slider handle)
-m1Slider.oninput = function() {
-    m1 = this.value;
-}
-
 const d = new drawTool("layer1");
 const d2 = new drawTool("layer2");
 
-var m1 = 10;
-var m2 = 10;
+var m1 = 9;
+var m2 = 9;
 var l1 = 150;
 var l2 = 150;
-var angle1 = Math.PI/3;
+var angle1 = Math.PI/2;
 var angle2 = Math.PI/3;
-var g = 1.01;
+var g = 1;
 var x1 = 0; 
 var x2 = 0; 
 var y1 = l1; 
@@ -71,10 +64,6 @@ function update () {
 
     console.log(v1);
     console.log(v2);
-
-    if (v1 > 10 || v2 > 10) {
-        console.log("bug")
-    }
 
     ++frameN;
 
