@@ -68,7 +68,8 @@ function drawTool (canvas) {
     }
 
     this.line = (x1, y1, x2, y2, options) => {
-        var opt = options;
+        if (options === undefined) var opt = {};
+        else var opt = options;
         if (opt.color === undefined) opt.color = 'black'; 
         if (opt.width === undefined) opt.width = 1; 
 
@@ -79,6 +80,27 @@ function drawTool (canvas) {
         this.ctx.strokeStyle = opt.color; 
         this.ctx.stroke(); 
         this.ctx.closePath();        
+    }
+
+    this.startFillLine = (x, y) => {
+        this.ctx.beginPath(); 
+        this.ctx.moveTo(x, y);
+    };
+
+    this.fillLine = (x, y) => {
+        this.ctx.lineTo(x, y);
+        this.ctx.stroke(); 
+    }
+
+    this.endFillLine = (options) => {
+        if (options === undefined) var opt = {};
+        else var opt = options;
+        if (opt.color === undefined) opt.color = 'black'; 
+        if (opt.width === undefined) opt.width = 1; 
+        this.ctx.lineWidth = opt.width;
+        this.fillStyle = opt.color;
+        this.ctx.closePath();      
+        this.ctx.fill();
     }
 
     this.clearRect = (x1, y1, x2, y2, color='white') => {
