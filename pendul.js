@@ -35,8 +35,8 @@ frameN = 0;
 function update () {
     d.clearAll();
     d.circle(0, 0, 5);
-    a1 = calcAngle1();
-    a2 = calcAngle2(); 
+    a1 = calcA1();
+    a2 = calcA2(); 
 
     x1 = l1 * Math.sin(angle1);
     y1 = l1 * Math.cos(angle1);
@@ -46,24 +46,21 @@ function update () {
 
     //Linia
     if (frameN > 1)
-        d2.line(x2, y2, px2, py2, "red");
+        d2.line(x2, y2, px2, py2, {color:"red"});
     
     //Primer pendul
     d.line(0, 0, x1, y1);
-    d.circle(x1, y1, m1, true);
+    d.circle(x1, y1, m1);
 
     //Segon pendul
     d.line(x1, y1, x2, y2);
-    d.circle(x2, y2, m2, true);
+    d.circle(x2, y2, m2);
     
     v1 += a1;
     v2 += a2;
 
     angle1 += v1;
     angle2 += v2;
-
-    console.log(v1);
-    console.log(v2);
 
     ++frameN;
 
@@ -72,7 +69,7 @@ function update () {
 
 }
 
-function calcAngle1 () {
+function calcA1 () {
     let num1 = -g * ((2.0 * m1) + m2) * Math.sin(angle1);
     let num2 = -m2 * g * Math.sin(angle1 - (2.0 * angle2));
     let num3 = -2.0 * Math.sin(angle1 - angle2) * m2 * 
@@ -81,7 +78,7 @@ function calcAngle1 () {
     return ((num1 + num2 + num3) / den);
 }
 
-function calcAngle2 () {
+function calcA2 () {
     let num1 = 2.0 * Math.sin(angle1 - angle2);
     let num2 = v1 * v1 * l1 * (m1 + m2);
     let num3 = g * (m1 + m2) * Math.cos(angle1);
