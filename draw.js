@@ -89,7 +89,6 @@ function drawTool (canvas) {
 
     this.fillLine = (x, y) => {
         this.ctx.lineTo(x, y);
-        this.ctx.stroke(); 
     }
 
     this.endFillLine = (options) => {
@@ -98,9 +97,9 @@ function drawTool (canvas) {
         if (opt.color === undefined) opt.color = 'black'; 
         if (opt.width === undefined) opt.width = 1; 
         this.ctx.lineWidth = opt.width;
-        this.fillStyle = opt.color;
-        this.ctx.closePath();      
+        this.ctx.fillStyle = opt.color;
         this.ctx.fill();
+        this.ctx.closePath();      
     }
 
     this.clearRect = (x1, y1, x2, y2, color='white') => {
