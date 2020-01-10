@@ -31,7 +31,6 @@ d.translate(d.width/2, l1 + l2);
 d2.translate(d.width/2, l1 + l2);
 
 frameN = 0;
-
 function update () {
     d.clearAll();
     d.circle(0, 0, 5);
@@ -66,7 +65,6 @@ function update () {
 
     px2 = x2;
     py2 = y2;
-
 }
 
 function calcA1 () {
