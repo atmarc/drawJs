@@ -13,24 +13,22 @@ onmousemove = (e) => {
     d.mouseY = e.clientY;
 }
 
-var numWalls = 1;
+var numWalls = 3;
 
 var walls = [];
 
+// Afegim parets
+walls.push([0, 0, 0, d.height]);
+walls.push([0,d.height, d.width, d.height]);
+walls.push([d.width, d.height, d.width, 0]);
+walls.push([d.width, 0, 0, 0]);
+
 for (let i = 0; i < numWalls; ++i) {
-    // var x1 = Math.random() * d.width; 
-    // var x2 = Math.random() * d.width; 
-    // var y1 = Math.random() * d.height; 
-    // var y2 = Math.random() * d.height; 
-    var x1 = 400; 
-    var x2 = 700; 
-    var y1 = 100; 
-    var y2 = 400; 
+    var x1 = Math.random() * d.width; 
+    var x2 = Math.random() * d.width; 
+    var y1 = Math.random() * d.height; 
+    var y2 = Math.random() * d.height; 
     walls.push([x1,y1,x2,y2]);
-    walls.push([0,0,0,d.height]);
-    walls.push([0,d.height, d.width, d.height]);
-    walls.push([d.width, d.height, d.width, 0]);
-    walls.push([d.width, 0, 0, 0]);
 }
 
 function drawWalls() {
@@ -76,35 +74,29 @@ function calcM(v1, v2, w, x3, y3) {
     let x = (d - c)/(a - b);
     let y = a*((d - c)/(a - b)) + c; 
 
-    if (u1 == 0) {
-        x = x1;
-        y = x*a + c;
-        return check(x, y, x1, y1, x2, y2);  
-    }
-    
-    if (u2 == 0) {
-        y = y1;
-        if (u1 == 0)
-            x = (d - y)/b;
-        else
-            x = (c - y)/a;
-        return check(x, y, x1, y1, x2, y2);  
-    }
 
-    if (v1 == 0) {
+    if (abs(v1) < 0.001) {
         x = x3;
         y = x*b + d;
         return check(x, y, x1, y1, x2, y2);  
     }
-    if (v2 == 0) {
-        y = y3;
-        if (u1 == 0)
-            x = (d - y)/b;
-        else
-            x = (c - y)/a;
+
+    if (abs(u1) < 0.001) {
+        x = x1;
+        y = x*a + c;
         return check(x, y, x1, y1, x2, y2);  
     }
 
+    if (abs(v2) < 0.001) {
+        y = y3;
+        if (u1 == 0)
+            x = (c - y)/a;
+        else
+            x = (d - y)/b;
+        
+        return check(x, y, x1, y1, x2, y2);  
+    }
+    
     return check(x, y, x1, y1, x2, y2);  
     // return {x, y};
 }
@@ -115,35 +107,35 @@ function abs(x) {
 }
 
 function dist(p1, p2) {
-    console.log(p1);
-    console.log(p2);
     return Math.sqrt((p1.x - p2.x)*(p1.x - p2.x) + (p1.y - p2.y)*(p1.y - p2.y));
 }
 
 function drawRays() {
     var c = ["yellow", "orange", "blue", "brown", "red", "purple", "white", "green"];
     let j = 0;
-    var m = {x: d.mouseX, y: d.mouseY};
-    for (let a = 0; a < 2*Math.PI; a += Math.PI/4) {
+    for (let a = 0; a < 2*Math.PI; a += Math.PI/100) {
+        let m = {x: d.mouseX, y: d.mouseY};
         let sin = Math.sin(a);
         let cos = Math.cos(a);
-        let M = {x: Infinity, y: Infinity};
+        let M = undefined;
         let minDist = Infinity;
         for (let i = 0; i < walls.length; ++i) {
-            var aux = calcM(cos, sin, walls[i], d.mouseX, d.mouseY);
+            let aux = calcM(cos, sin, walls[i], d.mouseX, d.mouseY);
             // Només volem pintar la primera paret que ens trobem
             if (aux !== undefined) {
-                var distance = dist(m, aux);
-                console.log(distance);
+                let distance = dist(m, aux);
                 if (distance < minDist) {
-                    M = aux;
-                    minDist = distance;
+                    if (cos > 0 && aux.x > m.x || cos < 0 && aux.x < m.x) {
+                        M = aux;
+                        minDist = distance;
+                    }
                 }
             }
         }
         if (M !== undefined) {
             d.line(d.mouseX, d.mouseY, M.x, M.y, {color:c[j], width: 2});
-        } 
+        }
+        // else console.log(a*180/Math.PI); 
     } 
         
 }
@@ -155,4 +147,4 @@ function update() {
     d.circle(d.mouseX, d.mouseY, 10, {color: "white"});
 }
 
-d.setInterval(update, 500);
+d.setInterval(update, 10);
