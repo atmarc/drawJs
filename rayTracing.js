@@ -40,21 +40,24 @@ function drawWalls() {
 
 // Comprova que el punt és del segment
 function check (x, y, x1, y1, x2, y2) {
+    if (x1 == x2) return {x, y};
+    if (y1 == y2) return {x, y};
+ 
     if (x1 > x2) {
         if (x > x1) return;
         if (x < x2) return;
     }
     else {
-        if (x < x1) return;
         if (x > x2) return;
+        if (x < x1) return;
     }
     if (y1 > y2) {
         if (y > y1) return;
         if (y < y2) return;
     }
     else {
-        if (y < y1) return;
         if (y > y2) return;
+        if (y < y1) return;
     }
     return {x, y};
 }
@@ -74,23 +77,26 @@ function calcM(v1, v2, w, x3, y3) {
     let x = (d - c)/(a - b);
     let y = a*((d - c)/(a - b)) + c; 
 
-
-    if (abs(v1) < 0.001) {
-        x = x3;
-        y = x*b + d;
-        return check(x, y, x1, y1, x2, y2);  
-    }
-
-    if (abs(u1) < 0.001) {
+    if (u1 == 0) {
         x = x1;
         y = x*a + c;
         return check(x, y, x1, y1, x2, y2);  
     }
 
-    if (abs(v2) < 0.001) {
+    if (v1 == 0) {
+        x = x3;
+        if (u2 == 0) 
+            y = x*b + d;
+        else 
+            y = (x*u1 - x2*u1 + y2*u2)/u2;
+
+        return check(x, y, x1, y1, x2, y2);  
+    }
+
+    if (v2 == 0) {
         y = y3;
-        if (u1 == 0)
-            x = (c - y)/a;
+        if (u2 != 0)
+            x = (u1*y - u1*y1 + x1*u2)/u2;
         else
             x = (d - y)/b;
         
@@ -110,10 +116,18 @@ function dist(p1, p2) {
     return Math.sqrt((p1.x - p2.x)*(p1.x - p2.x) + (p1.y - p2.y)*(p1.y - p2.y));
 }
 
+function dir(v, p1, p2) {
+    if (v.x > 0 && p1.x >= p2.x) return false;
+    if (v.x < 0 && p1.x < p2.x) return false;
+    if (v.y > 0 && p1.y >= p2.y) return false;
+    if (v.y < 0 && p1.y < p2.y) return false;
+    return true;
+}
+
 function drawRays() {
     var c = ["yellow", "orange", "blue", "brown", "red", "purple", "white", "green"];
     let j = 0;
-    for (let a = 0; a < 2*Math.PI; a += Math.PI/100) {
+    for (let a = 0; a <= 2*Math.PI; a += Math.PI/500) {
         let m = {x: d.mouseX, y: d.mouseY};
         let sin = Math.sin(a);
         let cos = Math.cos(a);
@@ -125,7 +139,7 @@ function drawRays() {
             if (aux !== undefined) {
                 let distance = dist(m, aux);
                 if (distance < minDist) {
-                    if (cos > 0 && aux.x > m.x || cos < 0 && aux.x < m.x) {
+                    if (dir({x:cos, y:sin}, m, aux)) {
                         M = aux;
                         minDist = distance;
                     }
@@ -135,7 +149,6 @@ function drawRays() {
         if (M !== undefined) {
             d.line(d.mouseX, d.mouseY, M.x, M.y, {color:c[j], width: 2});
         }
-        // else console.log(a*180/Math.PI); 
     } 
         
 }
@@ -147,4 +160,4 @@ function update() {
     d.circle(d.mouseX, d.mouseY, 10, {color: "white"});
 }
 
-d.setInterval(update, 10);
+d.setInterval(update, 20);
