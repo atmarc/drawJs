@@ -1,5 +1,5 @@
 var canvas = document.getElementById("myCanvas");
-canvas.width = document.documentElement.clientWidth - 50;
+canvas.width = document.documentElement.clientWidth - 400;
 canvas.height = document.documentElement.clientHeight - 50;
 
 const d = new drawTool("myCanvas");
@@ -13,22 +13,26 @@ onmousemove = (e) => {
     d.mouseY = e.clientY;
 }
 
-var numWalls = 3;
+var numWalls = 2;
+var nRays = 50;
+var ms = 50;
 
 var walls = [];
 
-// Afegim parets
-walls.push([0, 0, 0, d.height]);
-walls.push([0,d.height, d.width, d.height]);
-walls.push([d.width, d.height, d.width, 0]);
-walls.push([d.width, 0, 0, 0]);
+function setWalls() {
+    // Afegim parets
+    walls.push([0, 0, 0, d.height]);
+    walls.push([0,d.height, d.width, d.height]);
+    walls.push([d.width, d.height, d.width, 0]);
+    walls.push([d.width, 0, 0, 0]);
 
-for (let i = 0; i < numWalls; ++i) {
-    var x1 = Math.random() * d.width; 
-    var x2 = Math.random() * d.width; 
-    var y1 = Math.random() * d.height; 
-    var y2 = Math.random() * d.height; 
-    walls.push([x1,y1,x2,y2]);
+    for (let i = 0; i < numWalls; ++i) {
+        var x1 = Math.random() * d.width; 
+        var x2 = Math.random() * d.width; 
+        var y1 = Math.random() * d.height; 
+        var y2 = Math.random() * d.height; 
+        walls.push([x1,y1,x2,y2]);
+    }
 }
 
 function drawWalls() {
@@ -77,29 +81,30 @@ function calcM(v1, v2, w, x3, y3) {
     let x = (d - c)/(a - b);
     let y = a*((d - c)/(a - b)) + c; 
 
-    if (u1 == 0) {
-        x = x1;
-        y = x*a + c;
-        return check(x, y, x1, y1, x2, y2);  
-    }
-
-    if (v1 == 0) {
+    if (abs(v1) < 0.0001) {
         x = x3;
-        if (u2 == 0) 
+        if (u2 == 0) {
             y = x*b + d;
-        else 
-            y = (x*u1 - x2*u1 + y2*u2)/u2;
-
+        }
+        else {
+            y = (x3*u2 - u2*x1 + u1*y1)/u1;
+        }
         return check(x, y, x1, y1, x2, y2);  
     }
 
-    if (v2 == 0) {
+    if (abs(v2) < 0.001) {
         y = y3;
         if (u2 != 0)
             x = (u1*y - u1*y1 + x1*u2)/u2;
         else
             x = (d - y)/b;
         
+        return check(x, y, x1, y1, x2, y2);  
+    }
+
+    if (u1 == 0) {
+        x = x1;
+        y = x*a + c;
         return check(x, y, x1, y1, x2, y2);  
     }
     
@@ -117,9 +122,9 @@ function dist(p1, p2) {
 }
 
 function dir(v, p1, p2) {
-    if (v.x > 0 && p1.x >= p2.x) return false;
+    if (v.x > 0 && p1.x > p2.x) return false;
     if (v.x < 0 && p1.x < p2.x) return false;
-    if (v.y > 0 && p1.y >= p2.y) return false;
+    if (v.y > 0 && p1.y > p2.y) return false;
     if (v.y < 0 && p1.y < p2.y) return false;
     return true;
 }
@@ -127,8 +132,9 @@ function dir(v, p1, p2) {
 function drawRays() {
     var c = ["yellow", "orange", "blue", "brown", "red", "purple", "white", "green"];
     let j = 0;
-    for (let a = 0; a <= 2*Math.PI; a += Math.PI/500) {
-        let m = {x: d.mouseX, y: d.mouseY};
+    let angle = Math.PI/(nRays/2);
+    for (let a = 0; a < 2*Math.PI; a += angle) {
+        let m = {x: d.mouseX, y: d.mouseY};1
         let sin = Math.sin(a);
         let cos = Math.cos(a);
         let M = undefined;
@@ -153,11 +159,23 @@ function drawRays() {
         
 }
 
+function checkWalls() {
+    numWalls = document.getElementById("nWalls").value;
+    walls = [];
+    setWalls();
+}
+
+function checkRays(){
+    nRays = document.getElementById("nRays").value;
+}
+
 function update() {
+    checkRays();
     d.backbroung("black");
     drawWalls();
     drawRays();
     d.circle(d.mouseX, d.mouseY, 10, {color: "white"});
 }
 
-d.setInterval(update, 20);
+setWalls();
+d.setInterval(update, ms);
