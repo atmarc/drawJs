@@ -43,9 +43,6 @@ function update () {
     x2 = x1 + l2 * Math.sin(angle2);
     y2 = y1 + l2 * Math.cos(angle2);
 
-    //Linia
-    if (frameN > 1)
-        d2.line(x2, y2, px2, py2, {color:"red"});
     
     //Primer pendul
     d.line(0, 0, x1, y1);
@@ -54,6 +51,10 @@ function update () {
     //Segon pendul
     d.line(x1, y1, x2, y2);
     d.circle(x2, y2, m2);
+    
+    //Linia
+    if (frameN > 1)
+        d2.line(x2, y2, px2, py2, {color:"red"});
     
     v1 += a1;
     v2 += a2;

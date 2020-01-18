@@ -45,7 +45,8 @@ function drawTool (canvas) {
     }
 
     this.backbroung = (color) => {
-        this.clearAll(color);
+        this.ctx.fillStyle = color;
+        this.ctx.fillRect(0 - this.xOffset, 0 - this.yOffset, d.width, d.height);
     }
 
     this.translate = (x, y) => {
@@ -112,9 +113,8 @@ function drawTool (canvas) {
         this.ctx.clearRect(x1, y1, x2, y2);
     } 
     
-    this.clearAll = (color='white') => {
-        this.ctx.fillStyle = color;        
-        this.ctx.fillRect(0 - this.xOffset, 0 - this.yOffset, d.width, d.height);
+    this.clearAll = () => {
+        this.ctx.clearRect(0 - this.xOffset, 0 - this.yOffset, d.width, d.height);
     }
 
     this.setInterval = (fun, frames) => {
