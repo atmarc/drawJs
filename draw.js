@@ -44,9 +44,9 @@ function drawTool (canvas) {
         }
     }
 
-    this.backbroung = (color) => {
+    this.background = (color) => {
         this.ctx.fillStyle = color;
-        this.ctx.fillRect(0 - this.xOffset, 0 - this.yOffset, d.width, d.height);
+        this.ctx.fillRect(0 - this.xOffset, 0 - this.yOffset, this.width, this.height);
     }
 
     this.translate = (x, y) => {
@@ -114,11 +114,12 @@ function drawTool (canvas) {
     } 
     
     this.clearAll = () => {
-        this.ctx.clearRect(0 - this.xOffset, 0 - this.yOffset, d.width, d.height);
+        this.ctx.clearRect(0 - this.xOffset, 0 - this.yOffset, this.width, this.height);
     }
 
-    this.setInterval = (fun, frames) => {
-        setInterval(fun, frames);
+    this.setInterval = (fun, frames, clear) => {
+        if (clear !== undefined) clearInterval(this.currentInterval);
+        this.currentInterval = setInterval(fun, frames);
     }
 
     this.rotate = (angle) => {
